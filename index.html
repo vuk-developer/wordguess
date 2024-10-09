@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VK IMPLEMENTATION OF PYTHON/HTML HANGMAN</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.12.5/brython.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.12.5/brython_stdlib.js">
+</script>
+</head>
+<body onload="brython()" style="display: flex; justify-content:  center;">
+
+    <div style="display: flex; align-items: center; flex-direction: column;">
+        <img id="stanje" src="state_0.svg" style="height: 35%;"></img>
+        <h3 id='poruka' style="color:darkblue; cursor: pointer; text-decoration: underline;" onclick="window.location.reload()">
+            
+        </h3>
+        <h2 id="linije"></h2>
+        <input id="slovo"/>
+        <br/>
+        <button id="provera">
+            Provera
+        </button>
+    </div>
+
+<script type="text/python">
+    import random
+    from browser import bind, document, html, window
+    lista_reci = [
+        'abandon',
+        'ability',
+        'able',
+        'about',
+        'above',
+        'absent',
+        'absorb',
+        'abstract',
+        'absurd',
+        'abuse',
+        'access',
+        'accident',
+        'account',
+        'accuse',
+        'achieve',
+        'acid',
+        'acoustic',
+        'acquire',
+        'across',
+        'act',
+        'action',
+        'actor',
+        'actress'
+    ]
+
+    rec = lista_reci[random.randint(0, len(lista_reci))]
+    broj_linija = "_ "*(len(rec)-1)
+    document['linije'].textContent = broj_linija
+
+    proverna_lista = []
+    for st in range(len(rec)):
+        proverna_lista.append('_')
+    
+    print(proverna_lista)
+    rec_lista = []
+    for i in rec:
+        i.strip()
+        rec_lista.append(i)
+
+    stanje = 0
+
+    def init(event):
+        if stanje >= 6:
+            document['poruka'].text = "Niste uspeli da uspešno pogodite reč. Kliknite ovde da biste pokušali ponovo."
+        else:
+            provera(event)
+
+    def provera(event):
+        global stanje
+        evaluator = False
+        za_proveru = document["slovo"].value
+        for i,j in enumerate(rec):
+            if j == za_proveru:
+                proverna_lista[i] = j
+                evaluator = True
+
+        document['linije'].text =  ' '.join(proverna_lista)
+        
+        if evaluator == False:
+            stanje+=1
+            document["stanje"].className = 'grafika'
+            document["stanje"].attrs["src"] = f'state_{str(stanje)}.svg'    
+        document["slovo"].value = "" 
+    document["provera"].bind("click", init)
+</script>
+</body>
+</html>
